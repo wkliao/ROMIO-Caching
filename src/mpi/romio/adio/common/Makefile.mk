@@ -73,3 +73,18 @@ romio_other_sources +=                  \
     adio/common/onesided_aggregation.c  \
     adio/common/ad_tuning.c             \
     adio/common/utils.c
+
+CACHING_SRC = adio/common/cache_thread.c \
+              adio/common/cache_open.c \
+              adio/common/cache_close.c \
+              adio/common/cache_barrier.c \
+              adio/common/cache_read.c \
+              adio/common/romio_cache.c \
+              adio/common/cache_sys_io.c \
+              adio/common/cache_fsize.c \
+              adio/common/cache_write.c \
+              adio/common/cache_metadata.c
+
+if ROMIO_CACHING
+   romio_other_sources += $(CACHING_SRC)
+endif

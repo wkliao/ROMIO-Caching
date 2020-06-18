@@ -33,9 +33,17 @@ void ADIO_Close(ADIO_File fd, int *error_code)
      * timing important?
      */
     if (fd->hints->deferred_open && fd->is_agg) {
+#ifdef ROMIO_CACHING
+        if (fd->hints->file_caching == ADIOI_HINT_ENABLE)
+            cache_close(fd->fptr);
+#endif
         (*(fd->fns->ADIOI_xxx_Close)) (fd, error_code);
     } else {
         if (fd->is_open) {
+#ifdef ROMIO_CACHING
+            if (fd->hints->file_caching == ADIOI_HINT_ENABLE)
+                cache_close(fd->fptr);
+#endif
             (*(fd->fns->ADIOI_xxx_Close)) (fd, error_code);
         } else {
             *error_code = MPI_SUCCESS;

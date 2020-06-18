@@ -72,6 +72,11 @@ void ADIOI_GEN_WriteContig(ADIO_File fd, const void *buf, int count,
             err = pwrite(fd->null_fd, p, wr_count, offset + bytes_xfered);
         else
 #endif
+#ifdef ROMIO_CACHING
+        if (fd->hints->file_caching == ADIOI_HINT_ENABLE)
+            err = cache_write(fd->fptr, p, offset + bytes_xfered, wr_count);
+        else
+#endif
             err = pwrite(fd->fd_sys, p, wr_count, offset + bytes_xfered);
         /* --BEGIN ERROR HANDLING-- */
         if (err == -1) {

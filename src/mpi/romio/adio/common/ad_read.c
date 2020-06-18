@@ -70,6 +70,11 @@ void ADIOI_GEN_ReadContig(ADIO_File fd, void *buf, int count,
             err = pread(fd->null_fd, p, rd_count, offset + bytes_xfered);
         else
 #endif
+#ifdef ROMIO_CACHING
+        if (fd->hints->file_caching == ADIOI_HINT_ENABLE)
+            err = cache_read(fd->fptr, p, offset + bytes_xfered, rd_count);
+        else
+#endif
             err = pread(fd->fd_sys, p, rd_count, offset + bytes_xfered);
         /* --BEGIN ERROR HANDLING-- */
         if (err == -1) {

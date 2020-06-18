@@ -178,4 +178,11 @@ void ADIOI_GEN_OpenColl(ADIO_File fd, int rank, int access_mode, int *error_code
      * not an aggregaor and we are doing deferred open, we returned earlier)*/
     fd->is_open = 1;
 
+#ifdef ROMIO_CACHING
+    if (fd->hints->file_caching == ADIOI_HINT_ENABLE) {
+        /* file has already opened above */
+        fd->fptr = cache_open(fd->comm, fd->file_system, fd->fd_sys,
+                              fd->access_mode, fd->hints->cache_page_size);
+    }
+#endif
 }

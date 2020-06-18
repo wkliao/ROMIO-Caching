@@ -90,6 +90,13 @@ struct ADIOI_Hints_struct {
             int numbridges;     /* total number of bridges */
         } bg;
     } fs_hints;
+
+#ifdef ROMIO_CACHING
+    int file_caching;
+    int cache_page_size;
+    int fd_align;
+    int fd_align_unit;
+#endif
 };
 
 typedef struct ADIOI_Datarep {

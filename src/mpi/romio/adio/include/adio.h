@@ -173,6 +173,10 @@ int ftruncate(int fd, off_t length);
 typedef struct ADIOI_Fns_struct ADIOI_Fns;
 typedef struct ADIOI_Hints_struct ADIOI_Hints;
 
+#ifdef ROMIO_CACHING
+#include "cache_thread.h"
+#endif
+
 typedef struct ADIOI_FileD {
     int cookie;                 /* for error checking */
     FDTYPE fd_sys;              /* system file descriptor */
@@ -245,6 +249,9 @@ typedef struct ADIOI_FileD {
     int romio_onesided_always_rmw;
     int romio_onesided_inform_rmw;
     int romio_tunegather;
+#ifdef ROMIO_CACHING
+    cache_file *fptr;           /* ROMIO caching  */
+#endif
 } ADIOI_FileD;
 
 typedef struct ADIOI_FileD *ADIO_File;

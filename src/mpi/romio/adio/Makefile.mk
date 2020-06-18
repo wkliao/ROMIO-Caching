@@ -23,6 +23,10 @@ noinst_HEADERS +=                      \
     adio/include/hint_fns.h            \
     adio/include/ad_tuning.h
 
+if ROMIO_CACHING
+   noinst_HEADERS += adio/include/cache_thread.h
+endif
+
 include $(top_srcdir)/adio/ad_daos/Makefile.mk
 include $(top_srcdir)/adio/ad_gpfs/Makefile.mk
 include $(top_srcdir)/adio/ad_gpfs/bg/Makefile.mk

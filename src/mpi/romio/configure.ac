@@ -1876,6 +1876,13 @@ if test "x$build_ROMIO_EMBEDDED" = xno; then
    AC_TYPE_UINTPTR_T
 fi
 
+AC_ARG_ENABLE(caching,
+   [AS_HELP_STRING([--enable-caching],
+                   [Turn on ROMIO file caching. @<:@default: disabled@:>@])],
+   [AC_DEFINE([ROMIO_CACHING], [1], [enable ROMIO caching])]
+)
+AM_CONDITIONAL([ROMIO_CACHING], [test "x${enable_caching}" = xyes])
+
 AC_SUBST(ARCH)
 AC_SUBST(FILE_SYSTEM)
 AC_SUBST(MPI_INCLUDE_DIR)

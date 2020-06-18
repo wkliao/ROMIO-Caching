@@ -21,7 +21,9 @@ void ADIOI_GEN_SetInfo(ADIO_File fd, MPI_Info users_info, int *error_code)
     int flag, nprocs = 0, len;
     int ok_to_override_cb_nodes = 0;
     static char myname[] = "ADIOI_GEN_SETINFO";
-
+#ifdef ROMIO_CACHING
+    int thread_provided;
+#endif
 
     /* if we've already set up default hints and the user has not asked us to
      * process any hints (MPI_INFO_NULL), then we can short-circuit hint
@@ -123,6 +125,15 @@ void ADIOI_GEN_SetInfo(ADIO_File fd, MPI_Info users_info, int *error_code)
         ADIOI_Info_set(info, "romio_ds_write", "automatic");
         fd->hints->ds_write = ADIOI_HINT_AUTO;
 
+#ifdef ROMIO_CACHING
+        /* Wei-keng Liao: default is disable client-side data caching */
+        MPI_Info_set(info, "romio_caching", "disable");
+        fd->hints->file_caching = ADIOI_HINT_DISABLE;
+
+        /* Wei-keng Liao: for client-side file caching */
+        MPI_Info_set(info, "romio_cache_page_size", "0");
+        fd->hints->cache_page_size = 0;
+#endif
         /* still to do: tune this a bit for a variety of file systems. there's
          * no good default value so just leave it unset */
         fd->hints->min_fdomain_size = 0;
@@ -249,6 +260,13 @@ void ADIOI_GEN_SetInfo(ADIO_File fd, MPI_Info users_info, int *error_code)
          * process hints for it. */
         ADIOI_Info_check_and_install_int(fd, users_info, "striping_unit",
                                          &(fd->hints->striping_unit), myname, error_code);
+
+#ifdef ROMIO_CACHING
+        ADIOI_Info_check_and_install_enabled(fd, users_info, "romio_caching",
+                                         &(fd->hints->file_caching), myname, error_code);
+        ADIOI_Info_check_and_install_int(fd, users_info, "romio_cache_page_size",
+                                         &(fd->hints->cache_page_size), myname, error_code);
+#endif
     }
 
     /* Begin hint post-processig: some hints take precidence over or conflict
